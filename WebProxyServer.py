@@ -39,22 +39,6 @@ while True:
 		except IOError:
 			# Error handling for file not found in cache
 			print('*CACHE* File found, but there is reading error.')
-			webServerName = fileName.partition("/")[0]
-			reqFileName = "/" + fileName.partition("/")[2]
-			print('webServerName:', webServerName)
-			print('reqFileName:', reqFileName)
-			
-			proxyClientSocket = socket(AF_INET, SOCK_STREAM)
-			proxyClientSocket.connect((webServerName, 80))
-			proxyClientSocket.send(("GET /" + reqFileName + " HTTP/1.1\r\nHost: google.com\r\n\r\n").encode())
-			buf = proxyClientSocket.recv(2048)
-			print(buf)
-			tmpFile = open("./" + fileName, "w+")
-			for i in range(0, len(buf)):
-				tmpFile.write(buf[i])
-				clientSocket.send(buf[i])
-			tmpFile.close()
-			proxyClientSocket.close()
 		clientSocket.close()
 	else:
 		print('*CACHE* File NOT found.')
@@ -68,11 +52,12 @@ while True:
 		proxyClientSocket.send(("GET /" + reqFileName + " HTTP/1.1\r\nHost: google.com\r\n\r\n").encode())
 		buf = proxyClientSocket.recv(2048)
 		print(buf)
-		tmpFile = open("./" + fileName, "w+")
-		for i in range(0, len(buf)):
-			tmpFile.write(buf[i])
-			clientSocket.send(buf[i])
-		tmpFile.close()
+		clientSocket.send(buf)
+		#tmpFile = open("./" + fileName, "w+")
+		# for i in range(0, len(buf)):
+		# 	#tmpFile.write(buf[i])
+		# 	clientSocket.send(buf[i])
+		#tmpFile.close()
 		proxyClientSocket.close()
 		clientSocket.close()
-	proxyServerSocket.close()
+	#proxyServerSocket.close()
